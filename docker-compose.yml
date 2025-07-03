@@ -1,0 +1,17 @@
+services:
+  instagram-downloader:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: instagram-downloader
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "--quiet", "http://localhost:3000"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
