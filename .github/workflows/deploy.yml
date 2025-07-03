@@ -1,0 +1,30 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Set up SSH key
+        run: |
+          echo "${{ secrets.VPS_SSH_KEY }}" > private_key
+          chmod 600 private_key
+
+      - name: Copy files to VPS
+        run: |
+          rsync -avz -e "ssh -i private_key -o StrictHostKeyChecking=no" . ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_DEPLOY_DIR }}
+
+      - name: Run docker-compose on VPS
+        run: |
+          ssh -i private_key -o StrictHostKeyChecking=no ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} << 'EOF'
+            cd ${{ secrets.VPS_DEPLOY_DIR }}
+            docker-compose down
+            docker-compose up --build -d
+          EOF
