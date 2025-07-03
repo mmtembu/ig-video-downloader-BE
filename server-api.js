@@ -17,7 +17,7 @@ async function extractInstagramVideo(instagramUrl) {
   console.log('⏳ Loading Instagram page...');
   await page.goto(instagramUrl, {
     waitUntil: 'networkidle2',
-    timeout: 30000,
+    timeout: 0, // disables timeout, will only fail if fetch fails
   });
 
   await new Promise(resolve => setTimeout(resolve, 12000));
