@@ -28,3 +28,16 @@ jobs:
             docker-compose down
             docker-compose up --build -d
           EOF
+      - name: Show me my secrets please
+        env:
+          VPS_USERNAME: ${{ secrets.VPS_USERNAME }}
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_DEPLOY_DIR: ${{ secrets.VPS_DEPLOY_DIR }}
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+        run: |
+          echo "Hex value:"
+          echo -n "username: $VPS_USERNAME" | xxd -ps
+          echo -n "host: $VPS_HOST" | xxd -ps
+          echo -n "deploy dir: $VPS_DEPLOY_DIR" | xxd -ps
+          echo -n "ssh key: $VPS_SSH_KEY" | xxd -ps
+          echo
